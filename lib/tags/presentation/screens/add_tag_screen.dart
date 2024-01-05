@@ -79,7 +79,7 @@ class AddTagScreen extends ConsumerWidget {
                   ref.read(tagProvider.notifier).saveTag().then((value) {
                     if (value) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Transacción guardada correctamente')));
+                          content: Text('Etiqueta guardada correctamente')));
                       ref
                           .read(addTransactionFormProvider.notifier)
                           .loadTagsAndEntities()

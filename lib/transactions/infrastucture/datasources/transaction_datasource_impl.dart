@@ -6,8 +6,6 @@ import 'package:my_finances/transactions/domain/entities/transaction.dart';
 import 'package:my_finances/transactions/infrastucture/mappers/transaction_mapper.dart';
 
 class TransactionDataSourceImpl extends TransactionDataSource {
-  //   late final Dio dio;
-  // TagDataSourceImpl() : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
   final db = FirebaseFirestore.instance;
   final collectionName = 'TCTransaction';
 
@@ -16,7 +14,11 @@ class TransactionDataSourceImpl extends TransactionDataSource {
       List<Tag> tags, List<Entity> entities) async {
     try {
       final List<ETransaction> transactions = [];
-      await db.collection(collectionName).get().then((event) {
+      await db
+          .collection(collectionName)
+          .orderBy('date', descending: true)
+          .get()
+          .then((event) {
         for (var doc in event.docs) {
           Map<String, dynamic> data = doc.data();
           transactions.add(TransactionMapper.transactionJsonToEntity(
@@ -32,17 +34,16 @@ class TransactionDataSourceImpl extends TransactionDataSource {
   @override
   Future<bool> saveTransaction(ETransaction transaction) async {
     try {
-      final response = await db.collection(collectionName).add({
+      await db.collection(collectionName).add({
         'amount': transaction.amount,
         'date': transaction.date,
         'detail': transaction.detail,
         'id_entity': transaction.entity.id,
-        'id_tag': transaction.tag.id
+        'id_tag': transaction.tag.id,
+        'type': transaction.type
       });
-      print(response);
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }

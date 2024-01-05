@@ -11,6 +11,7 @@ class TransactionMapper {
         entity: entities.firstWhere((entity) => entity.id == json['id_entity']),
         detail: json['detail'],
         amount: json['amount'],
+        type: json['type'],
         date: json['date'].toDate(),
       );
 }

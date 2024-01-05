@@ -20,6 +20,7 @@ class AddTransactionFormState {
   final double amount;
   final String? detail;
   final DateTime? date;
+  final String type;
 
   AddTransactionFormState(
       {this.isLoading = false,
@@ -29,7 +30,8 @@ class AddTransactionFormState {
       this.selectedEntity,
       this.amount = 0,
       this.detail,
-      this.date});
+      this.date,
+      this.type = 'Gastos'});
 
   AddTransactionFormState copyWith({
     bool? isLoading,
@@ -40,6 +42,7 @@ class AddTransactionFormState {
     double? amount,
     String? detail,
     DateTime? date,
+    String? type,
   }) =>
       AddTransactionFormState(
         isLoading: isLoading ?? this.isLoading,
@@ -50,6 +53,7 @@ class AddTransactionFormState {
         amount: amount ?? this.amount,
         detail: detail ?? this.detail,
         date: date ?? this.date,
+        type: type ?? this.type,
       );
 }
 
@@ -100,6 +104,10 @@ class AddTransactionFormNotifier
     dateTxtController.text = value.toIso8601String().split('T')[0];
   }
 
+  void onTypeChanged(String value) {
+    state = state.copyWith(type: value);
+  }
+
   Future<bool> onSubmit() async {
     state = state.copyWith(isLoading: true);
     final transaction = ETransaction(
@@ -108,7 +116,8 @@ class AddTransactionFormNotifier
         entity: state.selectedEntity!,
         detail: state.detail!,
         amount: state.amount,
-        date: state.date!);
+        date: state.date!,
+        type: state.type);
     final response = await transactionRepository.saveTransaction(transaction);
     if (response) {
       dateTxtController.clear();

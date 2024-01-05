@@ -50,7 +50,8 @@ class AddEntityScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: DropdownSearch<Tag>(
               popupProps: const PopupProps.dialog(
-                  showSearchBox: true,
+                  // showSearchBox: true,
+                  fit: FlexFit.loose,
                   searchFieldProps: TextFieldProps(
                       decoration:
                           InputDecoration(border: UnderlineInputBorder()))),

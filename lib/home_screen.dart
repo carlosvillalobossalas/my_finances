@@ -30,7 +30,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      extendBody: true,
+      // extendBody: true,
       appBar: AppBar(
         leading: const Icon(
           Icons.monetization_on,

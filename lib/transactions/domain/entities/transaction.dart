@@ -8,6 +8,7 @@ class ETransaction {
   final String detail;
   final double amount;
   final DateTime date;
+  final String type;
 
   ETransaction(
       {required this.id,
@@ -15,5 +16,6 @@ class ETransaction {
       required this.entity,
       required this.detail,
       required this.amount,
-      required this.date});
+      required this.date,
+      required this.type});
 }

@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -124,6 +125,26 @@ class AddTransactionScreen extends ConsumerWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
+                child: DropdownSearch<String>(
+                  popupProps: const PopupProps.dialog(
+                      fit: FlexFit.loose,
+                      searchFieldProps: TextFieldProps(
+                          decoration:
+                              InputDecoration(border: UnderlineInputBorder()))),
+                  items: const ['Gastos', 'Ingresos'],
+                  itemAsString: (item) => item,
+                  selectedItem: addTransactionFormState.type,
+                  onChanged: (value) {
+                    if (value != null) {
+                      ref
+                          .read(addTransactionFormProvider.notifier)
+                          .onTypeChanged(value);
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: TextSelectionTheme(
                   data: const TextSelectionThemeData(
                       selectionColor: Colors.transparent),
@@ -141,9 +162,15 @@ class AddTransactionScreen extends ConsumerWidget {
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2101));
                       if (pickedDate != null) {
+                        final time = DateTime.now();
                         ref
                             .read(addTransactionFormProvider.notifier)
-                            .onDateChange(pickedDate);
+                            .onDateChange(DateTime(
+                                pickedDate.year,
+                                pickedDate.month,
+                                pickedDate.day,
+                                time.hour,
+                                time.minute));
                       }
                     },
                   ),
