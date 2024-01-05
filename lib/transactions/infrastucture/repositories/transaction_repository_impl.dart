@@ -10,9 +10,9 @@ class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl(this.dataSource);
 
   @override
-  Future<List<ETransaction>> getTransactions(
-      List<Tag> tags, List<Entity> entities) {
-    return dataSource.getTransactions(tags, entities);
+  Future<List<ETransaction>> getTransactions(List<Tag> tags,
+      List<Entity> entities, DateTime initialDate, DateTime endDate) {
+    return dataSource.getTransactions(tags, entities, initialDate, endDate);
   }
 
   @override

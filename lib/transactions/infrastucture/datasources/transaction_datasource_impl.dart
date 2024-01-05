@@ -10,12 +10,14 @@ class TransactionDataSourceImpl extends TransactionDataSource {
   final collectionName = 'TCTransaction';
 
   @override
-  Future<List<ETransaction>> getTransactions(
-      List<Tag> tags, List<Entity> entities) async {
+  Future<List<ETransaction>> getTransactions(List<Tag> tags,
+      List<Entity> entities, DateTime initialDate, DateTime endDate) async {
     try {
       final List<ETransaction> transactions = [];
       await db
           .collection(collectionName)
+          .where('date', isGreaterThan: initialDate)
+          .where('date', isLessThan: endDate)
           .orderBy('date', descending: true)
           .get()
           .then((event) {

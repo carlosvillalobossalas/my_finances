@@ -11,10 +11,89 @@ class ListTransactionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsState = ref.watch(transactionProvider);
+    final initialDateController =
+        ref.watch(transactionProvider.notifier).initialDateTxtController;
+    final endDateController =
+        ref.watch(transactionProvider.notifier).endDateTxtController;
     return transactionsState.isLoading
         ? const FullScreenLoader()
         : Column(
             children: [
+              SizedBox(
+                height: 75,
+                // color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextSelectionTheme(
+                          data: const TextSelectionThemeData(
+                              selectionColor: Colors.transparent),
+                          child: TextFormField(
+                            controller: initialDateController,
+                            decoration: const InputDecoration(
+                                icon: Icon(Icons.calendar_today),
+                                labelStyle: TextStyle(fontSize: 19),
+                                labelText: 'Desde'),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101));
+                              if (pickedDate != null) {
+                                ref
+                                    .read(transactionProvider.notifier)
+                                    .onInitialDateChange(DateTime(
+                                        pickedDate.year,
+                                        pickedDate.month,
+                                        pickedDate.day,
+                                        0,
+                                        1));
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextSelectionTheme(
+                          data: const TextSelectionThemeData(
+                              selectionColor: Colors.transparent),
+                          child: TextFormField(
+                            controller: endDateController,
+                            decoration: const InputDecoration(
+                                icon: Icon(Icons.calendar_today),
+                                labelStyle: TextStyle(fontSize: 19),
+                                labelText: 'Hasta'),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101));
+                              if (pickedDate != null) {
+                                // final time = DateTime.now();
+                                ref
+                                    .read(transactionProvider.notifier)
+                                    .onEndDateChange(DateTime(
+                                        pickedDate.year,
+                                        pickedDate.month,
+                                        pickedDate.day,
+                                        23,
+                                        59));
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(),
               Expanded(
                 child: ListView.builder(
                   itemCount: transactionsState.transactions.length,
@@ -54,39 +133,51 @@ class ListTransactionScreen extends ConsumerWidget {
               Container(
                 height: 75,
                 color: Colors.grey[100],
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(
-                          'Ingresos +',
+                        const Text(
+                          '+ Ingresos',
                           style: TextStyle(color: Colors.green),
                         ),
                         Text(
-                          '₡3000',
-                          style: TextStyle(color: Colors.green),
+                          '₡${transactionsState.income}',
+                          style: const TextStyle(color: Colors.green),
                         )
                       ],
                     ),
-                    //TODO: agregar fechas
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text(
+                          '- Gastos ',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        Text(
+                          '₡${transactionsState.expenses}',
+                          style: const TextStyle(color: Colors.red),
+                        )
+                      ],
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          'Gastos - ',
-                          style: TextStyle(color: Colors.red),
+                          '= Balance',
+                          style: TextStyle(
+                              color: transactionsState.balance > 0
+                                  ? Colors.green
+                                  : Colors.red),
                         ),
-                        Text(
-                          '₡1000',
-                          style: TextStyle(color: Colors.red),
-                        )
+                        Text('₡${transactionsState.balance}',
+                            style: TextStyle(
+                                color: transactionsState.balance > 0
+                                    ? Colors.green
+                                    : Colors.red))
                       ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [Text('Balance ='), Text('₡2000')],
                     )
                   ],
                 ),
