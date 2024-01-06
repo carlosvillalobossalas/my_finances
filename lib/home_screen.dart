@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_finances/transactions/presentation/screens/add_transaction_screen.dart';
 import 'package:my_finances/transactions/presentation/screens/list_transaction_screen.dart';
+import 'package:my_finances/transactions/presentation/screens/menu_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +17,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   static final List<Widget> _widgetOptions = <Widget>[
     const ListTransactionScreen(),
     const AddTransactionScreen(),
-    const Placeholder(),
-    const Placeholder(),
+    const MenuScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -42,7 +42,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: colors.primary,
+        // actions: [
+        //   _selectedIndex == 0
+        //       ? IconButton(
+        //           onPressed: () {},
+        //           icon: const Icon(
+        //             Icons.view_list,
+        //             color: Colors.white,
+        //             size: 30,
+        //           ))
+        //       : const SizedBox()
+        // ],
       ),
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

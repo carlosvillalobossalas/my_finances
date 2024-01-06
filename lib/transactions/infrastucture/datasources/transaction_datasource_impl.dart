@@ -37,7 +37,9 @@ class TransactionDataSourceImpl extends TransactionDataSource {
   Future<bool> saveTransaction(ETransaction transaction) async {
     try {
       await db.collection(collectionName).add({
-        'amount': transaction.amount,
+        'amount': transaction.type == 'Gastos'
+            ? transaction.amount * -1
+            : transaction.amount,
         'date': transaction.date,
         'detail': transaction.detail,
         'id_entity': transaction.entity.id,
