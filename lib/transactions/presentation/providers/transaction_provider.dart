@@ -20,7 +20,7 @@ class TransactionState {
   final double income;
   final double balance;
 
-  final bool transactionView;
+  final bool changeView;
 
   TransactionState(
       {this.isLoading = false,
@@ -31,7 +31,7 @@ class TransactionState {
       this.balance = 0,
       this.initialDate,
       this.endDate,
-      this.transactionView = true});
+      this.changeView = true});
 
   TransactionState copyWith({
     bool? isLoading,
@@ -42,7 +42,7 @@ class TransactionState {
     double? expenses,
     double? income,
     double? balance,
-    bool? transactionView,
+    bool? changeView,
   }) =>
       TransactionState(
           isLoading: isLoading ?? this.isLoading,
@@ -53,7 +53,7 @@ class TransactionState {
           expenses: expenses ?? this.expenses,
           income: income ?? this.income,
           balance: balance ?? this.balance,
-          transactionView: transactionView ?? this.transactionView);
+          changeView: changeView ?? this.changeView);
 }
 
 class TransactionNotifier extends StateNotifier<TransactionState> {
@@ -120,7 +120,7 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
   }
 
   void onTransactionViewChange() {
-    state = state.copyWith(transactionView: !state.transactionView);
+    state = state.copyWith(changeView: !state.changeView);
   }
 }
 

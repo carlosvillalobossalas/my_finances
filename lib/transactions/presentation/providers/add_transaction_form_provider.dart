@@ -18,7 +18,7 @@ class AddTransactionFormState {
   final Tag? selectedTag;
   final Entity? selectedEntity;
   final double amount;
-  final String? detail;
+  final String detail;
   final DateTime? date;
   final String type;
 
@@ -29,7 +29,7 @@ class AddTransactionFormState {
       this.selectedTag,
       this.selectedEntity,
       this.amount = 0,
-      this.detail,
+      this.detail = '',
       this.date,
       this.type = 'Gastos'});
 
@@ -111,10 +111,10 @@ class AddTransactionFormNotifier
   Future<bool> onSubmit() async {
     state = state.copyWith(isLoading: true);
     final transaction = ETransaction(
-        id: 'i',
+        id: '',
         tag: state.selectedTag!,
         entity: state.selectedEntity!,
-        detail: state.detail!,
+        detail: state.detail,
         amount: state.amount,
         date: state.date!,
         type: state.type);
@@ -124,6 +124,7 @@ class AddTransactionFormNotifier
       amountTxtController.clear();
       detailTxtController.clear();
       state = AddTransactionFormState();
+      await loadTagsAndEntities();
     }
     state = state.copyWith(isLoading: false);
     return response;

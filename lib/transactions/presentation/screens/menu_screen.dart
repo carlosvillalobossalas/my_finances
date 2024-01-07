@@ -7,13 +7,13 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
       children: [
         ElevatedButton(
           onPressed: () {
             context.push('/chart/pie');
           },
-          child: const Text('Grafico'),
+          child: const Text('Graficos'),
         )
       ],
     );

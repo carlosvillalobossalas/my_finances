@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_finances/charts/presentation/screens/pie_chart_screen.dart';
+import 'package:my_finances/charts/presentation/screens/charts_screen.dart';
 import 'package:my_finances/config/router/app_router_notifier.dart';
-import 'package:my_finances/csv/presentation/screens/csv_screen.dart';
 import 'package:my_finances/entities/presentation/screens/add_entity_screen.dart';
 import 'package:my_finances/home_screen.dart';
 import 'package:my_finances/tags/presentation/screens/add_tag_screen.dart';
@@ -27,13 +26,7 @@ final goRouterProvider = Provider((ref) {
       //     return const LoginScreen();
       //   },
       // ),
-      GoRoute(
-        path: '/csv',
-        // name: LoginScreen.name,
-        builder: (context, state) {
-          return const CsvScreen();
-        },
-      ),
+
       GoRoute(
         path: '/',
         // name: LoginScreen.name,
@@ -59,7 +52,7 @@ final goRouterProvider = Provider((ref) {
         path: '/chart/pie',
         // name: LoginScreen.name,
         builder: (context, state) {
-          return const PieChartScreen();
+          return const ChartsScreen();
         },
       ),
       //

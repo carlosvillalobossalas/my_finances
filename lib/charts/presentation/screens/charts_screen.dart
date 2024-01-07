@@ -1,44 +1,26 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_finances/charts/presentation/widget/pie_chart_widget.dart';
 import 'package:my_finances/full_screen_loader.dart';
-import 'package:my_finances/helpers/currency_formatter.dart';
-import 'package:my_finances/helpers/get_random_color.dart';
-import 'package:my_finances/tags/domain/entities/grouped_tag.dart';
 import 'package:my_finances/transactions/presentation/providers/transaction_provider.dart';
 
-class PieChartScreen extends ConsumerWidget {
-  const PieChartScreen({super.key});
+class ChartsScreen extends ConsumerWidget {
+  const ChartsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsState = ref.watch(transactionProvider);
-    final expensesList = transactionsState.groupedTransactions
-        .where((group) => group.totalAmount < 0)
+    final dataList = transactionsState.groupedTransactions
+        .where((group) => transactionsState.changeView
+            ? group.totalAmount < 0
+            : group.totalAmount > 0)
         .toList();
+
     final initialDateController =
         ref.watch(transactionProvider.notifier).initialDateTxtController;
     final endDateController =
         ref.watch(transactionProvider.notifier).endDateTxtController;
     final colors = Theme.of(context).colorScheme;
-
-    List<PieChartSectionData> data =
-        List.generate(expensesList.length, (index) {
-      GroupedTag groupedTag = expensesList[index];
-      String title =
-          '${groupedTag.tag.name} - ₡ ${CurrencyFormatter.colonFormat(groupedTag.totalAmount)}';
-      return PieChartSectionData(
-        color: RandomColor.get(),
-        value: groupedTag.totalAmount,
-        title: title,
-        titleStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          backgroundColor: Colors.grey[50],
-        ),
-        radius: 50,
-      );
-    });
 
     return transactionsState.isLoading
         ? const FullScreenLoader()
@@ -131,19 +113,55 @@ class PieChartScreen extends ConsumerWidget {
                             ),
                           ),
                         ),
+                        IconButton(
+                            onPressed: () {
+                              ref
+                                  .read(transactionProvider.notifier)
+                                  .onTransactionViewChange();
+                            },
+                            icon: Icon(
+                              Icons.monetization_on,
+                              color: transactionsState.changeView
+                                  ? Colors.red
+                                  : Colors.green,
+                              size: 30,
+                            ))
                       ],
                     ),
                   ),
                 ),
                 const Divider(),
-                SizedBox(
-                  // color: Colors.red,
-                  height: 350,
-                  child: PieChart(PieChartData(
-                    sections: data,
-                    centerSpaceRadius: 50,
-                  )),
-                ),
+                dataList.isNotEmpty
+                    ? Expanded(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              transactionsState.changeView
+                                  ? 'Gastos'
+                                  : 'Ingresos',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black,
+                                  fontSize: 20),
+                            ),
+                            PieChartWidget(
+                              dataList: dataList,
+                            ),
+                          ],
+                        ),
+                      )
+                    : const Expanded(
+                        child: Center(
+                          child: Text('Sin data',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black,
+                                  fontSize: 20)),
+                        ),
+                      ),
                 // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 //   RangeSlider(
                 //       values: csvState.rangeValues,

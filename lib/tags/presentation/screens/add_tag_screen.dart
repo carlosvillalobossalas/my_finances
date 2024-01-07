@@ -33,7 +33,6 @@ class AddTagScreen extends ConsumerWidget {
         backgroundColor: colors.primary,
         leading: IconButton(
             onPressed: () {
-              // ref.read(orderFormProvider.notifier).clearForm();
               Navigator.pop(context);
             },
             icon: const Icon(

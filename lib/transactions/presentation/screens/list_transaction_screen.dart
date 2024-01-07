@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_finances/full_screen_loader.dart';
@@ -106,38 +107,41 @@ class ListTransactionScreen extends ConsumerWidget {
                 ),
               ),
               const Divider(),
-              transactionsState.transactionView
+              transactionsState.changeView
                   ? Expanded(
                       child: ListView.builder(
                         itemCount: transactionsState.transactions.length,
                         itemBuilder: (context, index) {
                           ETransaction transaction =
                               transactionsState.transactions[index];
-                          return ExpansionTile(
-                            title: Text(
-                                ' ₡${CurrencyFormatter.colonFormat(transaction.amount)}',
+                          return SlideInLeft(
+                            child: ExpansionTile(
+                              title: Text(
+                                  ' ₡${CurrencyFormatter.colonFormat(transaction.amount)}',
+                                  style: TextStyle(
+                                      color: transaction.type == 'Gastos'
+                                          ? Colors.red
+                                          : Colors.green)),
+                              subtitle: Text(
+                                transaction.tag.name,
                                 style: TextStyle(
-                                    color: transaction.type == 'Gastos'
-                                        ? Colors.red
-                                        : Colors.green)),
-                            subtitle: Text(
-                              transaction.tag.name,
-                              style: TextStyle(
-                                  color: Color(
-                                      int.parse('0x${transaction.tag.color}'))),
-                            ),
-                            trailing: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.delete)),
-                            expandedAlignment: Alignment.centerLeft,
-                            children: [
-                              ListTile(
-                                title: Text(
-                                    '${transaction.entity.name}: ${transaction.detail}'),
-                                subtitle: Text(
-                                    transaction.date.toString().split(' ')[0]),
+                                    color: Color(int.parse(
+                                        '0x${transaction.tag.color}'))),
                               ),
-                            ],
+                              trailing: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.delete)),
+                              expandedAlignment: Alignment.centerLeft,
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                      '${transaction.entity.name}: ${transaction.detail}'),
+                                  subtitle: Text(transaction.date
+                                      .toString()
+                                      .split(' ')[0]),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -148,32 +152,35 @@ class ListTransactionScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         GroupedTag groupedTag =
                             transactionsState.groupedTransactions[index];
-                        return ExpansionTile(
-                          title: Text(groupedTag.tag.name,
-                              style: TextStyle(
-                                  color: Color(
-                                      int.parse('0x${groupedTag.tag.color}')))),
-                          subtitle: Text(
-                              '₡${CurrencyFormatter.colonFormat(groupedTag.totalAmount)}',
-                              style: TextStyle(
-                                  color: groupedTag.totalAmount < 0
-                                      ? Colors.red
-                                      : Colors.green)),
-                          children: groupedTag.transactions.map((transaction) {
-                            return ListTile(
-                              title: Text(
-                                  '${transaction.entity.name}: ${transaction.detail}'),
-                              subtitle: Text(
-                                  '₡${CurrencyFormatter.colonFormat(transaction.amount)}',
-                                  style: TextStyle(
-                                      color: transaction.type == 'Gastos'
-                                          ? Colors.red
-                                          : Colors.green)),
-                              trailing: Text(transaction.date
-                                  .toIso8601String()
-                                  .split('T')[0]),
-                            );
-                          }).toList(),
+                        return SlideInRight(
+                          child: ExpansionTile(
+                            title: Text(groupedTag.tag.name,
+                                style: TextStyle(
+                                    color: Color(int.parse(
+                                        '0x${groupedTag.tag.color}')))),
+                            subtitle: Text(
+                                '₡${CurrencyFormatter.colonFormat(groupedTag.totalAmount)}',
+                                style: TextStyle(
+                                    color: groupedTag.totalAmount < 0
+                                        ? Colors.red
+                                        : Colors.green)),
+                            children:
+                                groupedTag.transactions.map((transaction) {
+                              return ListTile(
+                                title: Text(
+                                    '${transaction.entity.name}: ${transaction.detail}'),
+                                subtitle: Text(
+                                    '₡${CurrencyFormatter.colonFormat(transaction.amount)}',
+                                    style: TextStyle(
+                                        color: transaction.type == 'Gastos'
+                                            ? Colors.red
+                                            : Colors.green)),
+                                trailing: Text(transaction.date
+                                    .toIso8601String()
+                                    .split('T')[0]),
+                              );
+                            }).toList(),
+                          ),
                         );
                       },
                     )),
